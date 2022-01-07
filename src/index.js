@@ -1,47 +1,32 @@
-import { createStore } from "redux";
+import { createStore } from "redux"; //store를 사용하기 위해 import;
 
-const plus = document.getElementById('plus');
-const minus = document.getElementById('minus');
-const number = document.querySelector('span');
+const log = console.log;
+const abbBtn = document.getElementById('btn-add');
+const input = document.querySelector('input');
+const todoUl = document.querySelectorAll('.todo-list')[0];
 
-const ADD = "ADD";
-const MINUS = "MINUS";
-//span에 초기 값 설정
-number.innerText = 0;
+log(abbBtn, input, todoUl);
 
-//리듀서 생성
-const modifyReducer = (count = 0, action) => {
-  switch(action.type){
-    case ADD :
-      return count + 1;
-    case MINUS :
-      return count - 1;
-    default : return count;
+const todoDelete = (e) => {
+  if(e.target.className === 'remove-btn'){
+    const pane = e.target.parentNode;
+    pane.remove();
   }
 }
-//데이터를 저장할 store를 생성
-//createStore 인자로 넣어줄 리듀서는 함수어야 함!
-const modifyStore = createStore(modifyReducer);
-
-const onChange = () => {
-  const state = modifyStore.getState();
-  number.innerText = state;
+const todoAdd = () => {
+  const { value } = input;
+  if(value.length < 1) return alert('입력해주세요!')
+  const li  = document.createElement('li');
+  const deleteBtn = document.createElement('button');
+  deleteBtn.classList.add('remove-btn')
+  deleteBtn.innerText = '❌';
+  li.innerText = value;
+  li.append(deleteBtn);
+  todoUl.append(li);
+  input.value = '';
 }
-const clickFn = (type) => modifyStore.dispatch({type})
-// const plusFn = () => {
-//   modifyStore.dispatch({type:'ADD'})
-// }
-// const minusFn = () => {
-//   modifyStore.dispatch({type:'MINUS'})
-// }
-plus.addEventListener('click', () => clickFn(ADD))
-minus.addEventListener('click', () => clickFn(MINUS))
-
-//store 상태를 구독함 
-//인자로 함수를 넣어줘야함
-//인자로 넘어간 함수는 구독중인 store가 변경될때 마다 호출됌.
-modifyStore.subscribe(onChange)
-
-console.log(modifyStore ,'state')
 
 
+abbBtn.addEventListener('click', todoAdd);
+todoUl.addEventListener('click', todoDelete);
+const intalalState = [];
