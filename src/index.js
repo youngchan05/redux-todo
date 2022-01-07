@@ -4,14 +4,20 @@ const plus = document.getElementById('plus');
 const minus = document.getElementById('minus');
 const number = document.querySelector('span');
 
+const ADD = "ADD";
+const MINUS = "MINUS";
 //span에 초기 값 설정
 number.innerText = 0;
 
 //리듀서 생성
 const modifyReducer = (count = 0, action) => {
-  const { type } = action;
-  if(type === 'ADD') return count + 1;
-  if(type === 'MINUS')  return count - 1;
+  switch(action.type){
+    case ADD :
+      return count + 1;
+    case MINUS :
+      return count - 1;
+    default : return count;
+  }
 }
 //데이터를 저장할 store를 생성
 //createStore 인자로 넣어줄 리듀서는 함수어야 함!
@@ -28,8 +34,8 @@ const clickFn = (type) => modifyStore.dispatch({type})
 // const minusFn = () => {
 //   modifyStore.dispatch({type:'MINUS'})
 // }
-plus.addEventListener('click', () => clickFn('ADD'))
-minus.addEventListener('click', () => clickFn('MINUS'))
+plus.addEventListener('click', () => clickFn(ADD))
+minus.addEventListener('click', () => clickFn(MINUS))
 
 //store 상태를 구독함 
 //인자로 함수를 넣어줘야함
