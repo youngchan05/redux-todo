@@ -1,14 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import { createStore } from "redux";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const plus = document.getElementById('plus');
+const minus = document.getElementById('minus');
+const number = document.querySelector('span');
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+
+//리듀서 생성
+const modifyReducer = (count = 0) => {
+  return count;
+}
+//데이터를 저장할 store를 생성
+//createStore 인자로 넣어줄 리듀서는 함수어야 함!
+const modifyStore = createStore(modifyReducer);
+
+console.log(modifyStore.getState() ,'modifyStore')
+
+
+
+
