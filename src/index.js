@@ -7,13 +7,27 @@ const todoUl = document.querySelectorAll('.todo-list')[0];
 
 log(abbBtn, input, todoUl);
 
+//type 설정
 const ADD = 'ADD';
 const DELETE = 'DELETE';
+
 const initalState = [];
 //redux 적용
 
+const addDispatch = (title) => {
+  return {
+    type:ADD,
+    title,
+  }
+}
+const deleteDispatch = (id) => {
+  return {
+    type:DELETE,
+    id,
+  }
+}
+
 const todoReducer = (state = initalState, action) => {
-  log(state,'state',action ,'action')
   switch(action.type){
     case ADD :
       return [
@@ -28,43 +42,37 @@ const todoReducer = (state = initalState, action) => {
     default : return state;
   }
 }
+const todoStore = createStore(todoReducer);
+
 const onChnage = () => {
   const todo = todoStore.getState();
-  const li  = document.createElement('li');
-  const deleteBtn = document.createElement('button');
-  deleteBtn.classList.add('remove-btn')
-  deleteBtn.innerText = '❌';
+  todoUl.innerHTML ='';
+  input.value = '';
   todo.map((item, idx) => {
+    const li  = document.createElement('li');
+    const deleteBtn = document.createElement('button');
+    deleteBtn.classList.add('remove-btn')
+    deleteBtn.innerText = '❌';
     li.innerText = item.title;
     li.append(deleteBtn);
-    deleteBtn.addEventListener('click',(e)=> todoDelete(e,idx))
+    deleteBtn.addEventListener('click',(e)=>todoDelete(e,item.id))
     todoUl.append(li);
   })
 }
-const todoStore = createStore(todoReducer);
 const todoAdd = () => {
-  todoStore.dispatch({
-    type:ADD,
-    title:input.value,
-  })
+  todoStore.dispatch(addDispatch(input.value))
 }
 
-const todoDelete = (e, idx) => {
-  if(e.target.className === 'remove-btn'){
-    const pane = e.target.parentNode;
-    pane.remove();
-    todoStore.dispatch({
-      type:DELETE,
-      id:idx
-    })
-  }
+const todoDelete = (e,idx) => {
+  const pane = e.target.parentNode;
+  pane.remove();
+  todoStore.dispatch(deleteDispatch(idx))
 }
 
 
 
 todoStore.subscribe(onChnage);
 abbBtn.addEventListener('click', todoAdd);
-todoUl.addEventListener('click', todoDelete);
 
 
-console.log(todoStore ,'todoStore')
+log(todoStore ,'todoStore')
