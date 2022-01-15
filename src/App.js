@@ -1,22 +1,45 @@
 import react from 'react';
 import { connect } from 'react-redux'
+import { useInput } from './Hooks/useInput';
+import { addTodo, deleteTodo } from './store';
 function App(props) {
-  const { state } = props;
+  const { todos, add, deleteTest} = props;
+  const [ state, setState] = useInput({
+    title:'',
+  });
+  const onClick = () => {
+    add(state.title);
+  }
+
+  const deleteClick = (id) => {
+    deleteTest(id)
+  }
   return (
     <div className="App">
        <div className="btn-wrap">
-        <input type="text" />
-        <button type="button">ADD</button>
+        <input type="text" name='title' defaultValue={state.title ||''} onChange={(e) => setState(e)}/>
+        <button type="button" onClick={()=> onClick()}>ADD</button>
        </div>
        <ul className="todo">
         {
-          state.map((item, idx) => <li key={item.id}>{item.title}</li>)
+          todos.map((item) => 
+          <li key={item.id}>
+            {item.title}
+            <span onClick={ ()=> deleteClick(item.id)}>❌</span>
+          </li>)
         }
        </ul>
     </div>
   );
 }
 const mapStateToProps = state => ({
-  state
+  todos: state,
 });
-export default connect(mapStateToProps)(App);
+
+const mapDisPatchToProps = dispatch => {
+  return {
+    add : text => dispatch(addTodo(text)),
+    deleteTest : id => dispatch(deleteTodo(id))
+  }
+}
+export default connect(mapStateToProps,mapDisPatchToProps)(App);
